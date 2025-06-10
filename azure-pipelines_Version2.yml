@@ -1,0 +1,19 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.x'
+- script: dotnet test --logger:trx --results-directory:$(Build.ArtifactStagingDirectory)/TestResults
+  displayName: 'Run tests'
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/TestResults/*.trx'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
